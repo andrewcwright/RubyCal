@@ -20,14 +20,23 @@ class Calendar
   end
 
   def day_header
-    return "Su Mo Tu We Th Fr Sa"
+    "Su Mo Tu We Th Fr Sa\n"
   end
 
-  # def first_day_of_month(month, year)
-  #   month = month.to_i
-  #   year = year.to_i
-  #   day_of_the_week = (1 + (13(month) / 5) + )
-  # end
+  def zeller(month, year)
+    year = year.to_i
+    month = month.to_i
+    q = 1
+    offset_months = [13,14]
+    if month == 1 or month == 2
+      y = (year - 1)
+      m = offset_months[month - 1]
+    else
+      y = year
+      m = month
+    end
+    h = (q + (((m + 1) * 26) / 10).floor + y + (y / 4).floor + (6 * (y / 100).floor) + (y / 400).floor) % 7
+  end
 
   def display(month, year)
     output = ""
@@ -40,5 +49,5 @@ class Calendar
 
 end
 
-output = Calendar.new
-output.display(month, year)
+# output = Calendar.new
+# output.display(month, year)
