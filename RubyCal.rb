@@ -1,7 +1,4 @@
-month = ARGV[0]
-year = ARGV[1]
 
-# puts `cal #{month} #{year}`
 class Calendar
 
   def header(month, year)
@@ -24,6 +21,7 @@ class Calendar
   end
 
   def zeller(month, year)
+    # return 0:Sat 1:Sun 2:Mon, 3:Tues, 4:Wed, 5:Thurs, 6:Fri
     year = year.to_i
     month = month.to_i
     q = 1
@@ -38,6 +36,70 @@ class Calendar
     h = (q + (((m + 1) * 26) / 10).floor + y + (y / 4).floor + (6 * (y / 100).floor) + (y / 400).floor) % 7
   end
 
+  def month_length(month, year)
+    thirty_day_months = [4, 6, 9, 11]
+    if month == 2
+      if (year % 4 != 0) or ((year % 100 == 0) and (year % 400 != 0))
+        return 28
+      else
+        return 29
+      end
+    elsif thirty_day_months.include? month
+      return 30
+    else
+      return 31
+    end
+  end
+
+  def format_week (month, year, week)
+    if week == 1
+      return "                   1" if zeller(month, year) == 0
+      return " 1  2  3  4  5  6  7" if zeller(month, year) == 1
+      return "    1  2  3  4  5  6" if zeller(month, year) == 2
+      return "       1  2  3  4  5" if zeller(month, year) == 3
+      return "          1  2  3  4" if zeller(month, year) == 4
+      return "             1  2  3" if zeller(month, year) == 5
+      return "                1  2" if zeller(month, year) == 6
+    else
+      week_string = ""
+      current_day = 2 if zeller(month, year) == 0
+      current_day = 8 if zeller(month, year) == 1
+      current_day = 7 if zeller(month, year) == 2
+      current_day = 6 if zeller(month, year) == 3
+      current_day = 5 if zeller(month, year) == 4
+      current_day = 4 if zeller(month, year) == 5
+      current_day = 3 if zeller(month, year) == 6
+      current_day = current_day + (7 * (week-2))
+      if current_day < 10 && current_day <= month_length(month,year)
+        week_string << " " + current_day.to_s
+        current_day += 1
+      elsif current_day <= month_length(month,year)
+        week_string << current_day.to_s
+        current_day += 1
+      end
+      week_end = current_day + 6
+      num_of_days = month_length(month, year)
+      while current_day < week_end && current_day <= num_of_days
+        if current_day < 10
+          week_string << "  " + current_day.to_s
+          current_day += 1
+        else
+          week_string << " " + current_day.to_s
+          current_day += 1
+        end
+      end
+      week_string
+    end
+  end
+
+  def format_month(month, year)
+    current_week = 1
+    while current_week <= 6
+      puts "#{format_week(month.to_i, year.to_i, current_week)}\n"
+      current_week += 1
+    end
+  end
+
   def display(month, year)
     output = ""
     upper_header = header(month, year)
@@ -49,5 +111,10 @@ class Calendar
 
 end
 
-# output = Calendar.new
-# output.display(month, year)
+if __FILE__ == $0
+  month = ARGV[0]
+  year = ARGV[1]
+  output = Calendar.new
+  output.display(month, year)
+  output.format_month(month, year)
+end
