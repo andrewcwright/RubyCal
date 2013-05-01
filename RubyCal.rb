@@ -2,22 +2,22 @@
 class Calendar
 
   def header(month, year)
-    return "    January #{year}\n" if month == "1"
-    return "   February #{year}\n" if month == "2"
-    return "     March #{year}\n" if month == "3"
-    return "     April #{year}\n" if month == "4"
-    return "      May #{year}\n" if month == "5"
-    return "     June #{year}\n" if month == "6"
-    return "     July #{year}\n" if month == "7"
-    return "    August #{year}\n" if month == "8"
-    return "   September #{year}\n" if month == "9"
-    return "   October #{year}\n" if month == "10"
-    return "   November #{year}\n" if month == "11"
-    return "   December #{year}\n" if month == "12"
+    return "January #{year}".center(20).rstrip if month == "1"
+    return "February #{year}".center(20).rstrip if month == "2"
+    return "March #{year}".center(20).rstrip if month == "3"
+    return "April #{year}".center(20).rstrip if month == "4"
+    return "May #{year}".center(20).rstrip if month == "5"
+    return "June #{year}".center(20).rstrip if month == "6"
+    return "July #{year}".center(20).rstrip if month == "7"
+    return "August #{year}".center(20).rstrip if month == "8"
+    return "September #{year}".center(20).rstrip if month == "9"
+    return "October #{year}".center(20).rstrip if month == "10"
+    return "November #{year}".center(20).rstrip if month == "11"
+    return "December #{year}".center(20).rstrip if month == "12"
   end
 
   def day_header
-    "Su Mo Tu We Th Fr Sa\n"
+    "Su Mo Tu We Th Fr Sa"
   end
 
   def zeller(month, year)
@@ -93,6 +93,8 @@ class Calendar
   end
 
   def format_month(month, year)
+    puts "#{header(month, year)}\n"
+    puts "#{day_header()}\n"
     current_week = 1
     while current_week <= 6
       puts "#{format_week(month.to_i, year.to_i, current_week)}\n"
@@ -100,13 +102,31 @@ class Calendar
     end
   end
 
-  def display(month, year)
-    output = ""
-    upper_header = header(month, year)
-    output << upper_header
-    lower_header = day_header()
-    output << lower_header
-    puts output
+  def format_year (year)
+    all_months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    current_month = 1
+    current_week = 1
+    puts "#{year.center(62).rstrip!}\n\n"
+    while current_month < 12
+      puts "#{all_months[current_month-1].center(20)}  #{all_months[current_month].center(20)}  #{all_months[current_month+1].center(20).rstrip}\n"
+      puts "#{day_header}  #{day_header}  #{day_header}\n"
+      while current_week <= 6
+        first_num_spaces = 20 - format_week(current_month, year.to_i, current_week).length
+        first_spaces = "  "
+        first_num_spaces.times {first_spaces << " "}
+        second_num_spaces = 20 - format_week(current_month+1, year.to_i, current_week).length
+        second_spaces = "  "
+        second_num_spaces.times {second_spaces << " "}
+        date_line = ""
+        date_line << "#{format_week(current_month, year.to_i, current_week)}" + first_spaces
+        date_line << "#{format_week(current_month+1, year.to_i, current_week)}" + second_spaces
+        date_line << "#{format_week(current_month+2, year.to_i, current_week)}"
+        puts date_line
+        current_week += 1
+      end
+      current_month += 3
+      current_week = 1
+    end
   end
 
 end
@@ -115,6 +135,10 @@ if __FILE__ == $0
   month = ARGV[0]
   year = ARGV[1]
   output = Calendar.new
-  output.display(month, year)
-  output.format_month(month, year)
+  if month and year
+    output.format_month(month, year)
+  elsif month and year.nil?
+    year = month
+    output.format_year(year)
+  end
 end
