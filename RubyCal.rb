@@ -1,19 +1,10 @@
 
 class Calendar
+  MONTHS = %w{January February March April May June July August September October November December}
 
   def header(month, year)
-    return "January #{year}".center(20).rstrip if month == "1"
-    return "February #{year}".center(20).rstrip if month == "2"
-    return "March #{year}".center(20).rstrip if month == "3"
-    return "April #{year}".center(20).rstrip if month == "4"
-    return "May #{year}".center(20).rstrip if month == "5"
-    return "June #{year}".center(20).rstrip if month == "6"
-    return "July #{year}".center(20).rstrip if month == "7"
-    return "August #{year}".center(20).rstrip if month == "8"
-    return "September #{year}".center(20).rstrip if month == "9"
-    return "October #{year}".center(20).rstrip if month == "10"
-    return "November #{year}".center(20).rstrip if month == "11"
-    return "December #{year}".center(20).rstrip if month == "12"
+    this_month = MONTHS[month.to_i - 1]
+    "#{this_month} #{year}".center(20).rstrip
   end
 
   def day_header
@@ -103,12 +94,11 @@ class Calendar
   end
 
   def format_year (year)
-    all_months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     current_month = 1
     current_week = 1
     puts "#{year.center(62).rstrip!}\n\n"
     while current_month < 12
-      puts "#{all_months[current_month-1].center(20)}  #{all_months[current_month].center(20)}  #{all_months[current_month+1].center(20).rstrip}\n"
+      puts "#{MONTHS[current_month-1].center(20)}  #{MONTHS[current_month].center(20)}  #{MONTHS[current_month+1].center(20).rstrip}\n"
       puts "#{day_header}  #{day_header}  #{day_header}\n"
       while current_week <= 6
         first_num_spaces = 20 - format_week(current_month, year.to_i, current_week).length
@@ -134,11 +124,19 @@ end
 if __FILE__ == $0
   month = ARGV[0]
   year = ARGV[1]
-  output = Calendar.new
+  cal = Calendar.new
+  all_months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  if month.nil? && year.nil?
+    month = (`date "+%B"`).chomp
+    year = (`date "+%Y"`).chomp
+  end
+  if all_months.include?(month)
+    month = (all_months.index(month) + 1).to_s
+  end
   if month and year
-    output.format_month(month, year)
+    cal.format_month(month, year)
   elsif month and year.nil?
     year = month
-    output.format_year(year)
+    cal.format_year(year)
   end
 end
