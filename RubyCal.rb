@@ -11,7 +11,7 @@ class Calendar
     "Su Mo Tu We Th Fr Sa"
   end
 
-  def zeller(month, year)
+  def get_first_day(month, year)
     # return 0:Sat 1:Sun 2:Mon, 3:Tues, 4:Wed, 5:Thurs, 6:Fri
     year = year.to_i
     month = month.to_i
@@ -31,57 +31,53 @@ class Calendar
     thirty_day_months = [4, 6, 9, 11]
     if month == 2
       if (year % 4 != 0) or ((year % 100 == 0) and (year % 400 != 0))
-        return 28
+        28
       else
-        return 29
+        29
       end
     elsif thirty_day_months.include? month
-      return 30
+      30
     else
-      return 31
+      31
     end
   end
 
   def format_week (month, year, week)
-    if week == 1
-      return "                   1" if zeller(month, year) == 0
-      return " 1  2  3  4  5  6  7" if zeller(month, year) == 1
-      return "    1  2  3  4  5  6" if zeller(month, year) == 2
-      return "       1  2  3  4  5" if zeller(month, year) == 3
-      return "          1  2  3  4" if zeller(month, year) == 4
-      return "             1  2  3" if zeller(month, year) == 5
-      return "                1  2" if zeller(month, year) == 6
+    first_day = get_first_day(month, year)
+    week_string, dates, current_day = "", 0, 0
+    if first_day === 0 
+      if week === 1
+        blank_spaces = 6 
+        dates = 1 
+      else
+        current_day = 2 
+      end
     else
-      week_string = ""
-      current_day = 2 if zeller(month, year) == 0
-      current_day = 8 if zeller(month, year) == 1
-      current_day = 7 if zeller(month, year) == 2
-      current_day = 6 if zeller(month, year) == 3
-      current_day = 5 if zeller(month, year) == 4
-      current_day = 4 if zeller(month, year) == 5
-      current_day = 3 if zeller(month, year) == 6
-      current_day = current_day + (7 * (week-2))
-      if current_day < 10 && current_day <= month_length(month,year)
-        week_string << " " + current_day.to_s
-        current_day += 1
-      elsif current_day <= month_length(month,year)
-        week_string << current_day.to_s
-        current_day += 1
+      if week === 1
+       blank_spaces = first_day - 1
+       dates = 8 - first_day
+      elsif (1..6).include?(first_day)
+        current_day = (9 - first_day)
       end
-      week_end = current_day + 6
-      num_of_days = month_length(month, year)
-      while current_day < week_end && current_day <= num_of_days
-        if current_day < 10
-          week_string << "  " + current_day.to_s
-          current_day += 1
-        else
-          week_string << " " + current_day.to_s
-          current_day += 1
-        end
-      end
-      week_string
     end
+
+    current_day = current_day + (7 * (week-2))
+    blank_spaces.times { week_string << "   " } if week === 1
+
+    dates = 7 if week > 1
+
+    dates.times do | index | 
+      if week == 1
+        week_string << " #{index + 1} " 
+      else
+        week_string << " #{current_day} " if current_day < 10 
+        week_string << "#{current_day} " if current_day <= month_length(month, year) && current_day >= 10
+        current_day += 1
+      end
+    end
+    week_string.rstrip
   end
+
 
   def format_month(month, year)
     puts "#{header(month, year)}\n"

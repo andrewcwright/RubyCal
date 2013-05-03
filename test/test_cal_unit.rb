@@ -15,21 +15,21 @@ class TestCalUnit < Test::Unit::TestCase
     assert_equal("Su Mo Tu We Th Fr Sa", day_head)
   end
 
-  def test_03_zeller_returns_proper_day_for_non_leap_year
+  def test_03_get_first_day_returns_proper_day_for_non_leap_year
     new_cal = Calendar.new
-    day = new_cal.zeller(1, 1999)
+    day = new_cal.get_first_day(1, 1999)
     assert_equal(6, day)
   end
 
-  def test_04_zeller_returns_proper_day_for_leap_year
+  def test_04_get_first_day_returns_proper_day_for_leap_year
     new_cal = Calendar.new
-    day = new_cal.zeller(2, 2004)
+    day = new_cal.get_first_day(2, 2004)
     assert_equal(1, day)
   end
 
-  def test_05_zeller_returns_proper_day_for_exception_year
+  def test_05_get_first_day_returns_proper_day_for_exception_year
     new_cal = Calendar.new
-    day = new_cal.zeller(2, 2100)
+    day = new_cal.get_first_day(2, 2100)
     assert_equal(2, day)
   end
 
