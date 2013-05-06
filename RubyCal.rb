@@ -2,6 +2,25 @@
 class Calendar
   MONTHS = %w{January February March April May June July August September October November December}
 
+  def initialize(month, year)
+    if month.nil? && year.nil?
+      month = (`date "+%B"`).chomp
+      year = (`date "+%Y"`).chomp
+    end
+    if MONTHS.include?(month)
+      month = (MONTHS.index(month) + 1).to_s
+    end
+    if month and year
+      abort ("#{month} is neither a month number (1..12) nor a name") unless (1..12).include? (month.to_i)
+      abort ("#{year} is not a number between (1800..3000)") unless (1800..3000).include? (year.to_i)
+      format_month(month, year)
+    elsif month and year.nil?
+      year = month
+      abort ("#{year} is not a number between (1800..3000)") unless (1800..3000).include? (year.to_i)
+      format_year(year)
+    end
+  end
+
   def header(month, year)
     this_month = MONTHS[month.to_i - 1]
     "#{this_month} #{year}".center(20).rstrip
@@ -60,12 +79,9 @@ class Calendar
         current_day = (9 - first_day)
       end
     end
-
     current_day = current_day + (7 * (week-2))
     blank_spaces.times { week_string << "   " } if week === 1
-
     dates = 7 if week > 1
-
     dates.times do | index | 
       if week == 1
         week_string << " #{index + 1} " 
@@ -118,21 +134,7 @@ class Calendar
 end
 
 if __FILE__ == $0
-  month = ARGV[0]
-  year = ARGV[1]
-  cal = Calendar.new
-  all_months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-  if month.nil? && year.nil?
-    month = (`date "+%B"`).chomp
-    year = (`date "+%Y"`).chomp
-  end
-  if all_months.include?(month)
-    month = (all_months.index(month) + 1).to_s
-  end
-  if month and year
-    cal.format_month(month, year)
-  elsif month and year.nil?
-    year = month
-    cal.format_year(year)
-  end
+  special_month = ARGV[0]
+  special_year = ARGV[1]
+  cal = Calendar.new(special_month, special_year)
 end

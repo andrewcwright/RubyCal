@@ -9,7 +9,7 @@ class TestCalIntegration < Test::Unit::TestCase
   def test_02_output_with_only_year_argument
     assert_equal(`cal 2013`, `ruby RubyCal.rb 2013`)
   end
-
+  
   def test_03_output_with_only_leap_year_argument
     assert_equal(`cal 2012`, `ruby RubyCal.rb 2012`)
   end
@@ -85,5 +85,17 @@ class TestCalIntegration < Test::Unit::TestCase
   def test_21_output_of_6_line_month
     assert_equal(`cal 4 2013`, `ruby RubyCal.rb 4 2013`)
   end
-  
+
+  def test_22_output_of_invalid_month_number
+    assert_equal(`cal 13 2013`, `ruby RubyCal.rb 13 2013`)
+  end
+
+  def test_8000
+    assert_raise(SystemExit) do
+      cal1 = Calendar.new(13, 2013)
+    end
+    assert_raise(SystemExit) do
+      cal2 = Calendar.new(12, 5000)
+    end
+  end
 end
