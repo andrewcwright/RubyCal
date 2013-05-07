@@ -9,28 +9,22 @@ class TestCalUnit < Test::Unit::TestCase
     assert_equal("    January 2000", head)
   end
 
-  def test_02_day_header_returns_string_of_days
-    new_cal = Calendar.new(1, 2000)
-    day_head = new_cal.day_header
-    assert_equal("Su Mo Tu We Th Fr Sa", day_head)
-  end
-
   def test_03_get_first_day_returns_proper_day_for_non_leap_year
     new_cal = Calendar.new(1, 1999)
     day = new_cal.get_first_day(1, 1999)
-    assert_equal(6, day)
+    assert_equal(5, day)
   end
 
   def test_04_get_first_day_returns_proper_day_for_leap_year
     new_cal = Calendar.new(2, 2004)
     day = new_cal.get_first_day(2, 2004)
-    assert_equal(1, day)
+    assert_equal(0, day)
   end
 
   def test_05_get_first_day_returns_proper_day_for_exception_year
     new_cal = Calendar.new(2, 2100)
     day = new_cal.get_first_day(2, 2100)
-    assert_equal(2, day)
+    assert_equal(1, day)
   end
 
   def test_06_month_length_returns_length_of_non_leap_feb

@@ -90,12 +90,15 @@ class TestCalIntegration < Test::Unit::TestCase
     assert_equal(`cal 13 2013`, `ruby RubyCal.rb 13 2013`)
   end
 
-  def test_8000
+  def test_23_raise_error_on_invalid_input
     assert_raise(SystemExit) do
       cal1 = Calendar.new(13, 2013)
     end
+  end
+
+  def test_24_raise_error_on_invalid_input
     assert_raise(SystemExit) do
-      cal2 = Calendar.new(12, 5000)
+      cal1 = Calendar.new(13, 2013)
     end
   end
 end
